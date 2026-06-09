@@ -4,6 +4,8 @@
  * Time: 2019/5/2 下午5:09
  */
 
+// ignore_for_file: prefer_initializing_formals
+
 import "dart:math" as Math;
 
 import "package:flutter/rendering.dart";
@@ -71,14 +73,14 @@ class SliverRefresh extends SingleChildRenderObjectWidget {
 class RenderSliverRefresh extends RenderSliverSingleBoxAdapter {
   RenderSliverRefresh({
     required double refreshIndicatorExtent,
-    required this._hasLayoutExtent,
+    required bool hasLayoutExtent,
     RenderBox? child,
     this.paintOffsetY,
     this.refreshStyle,
   }) : assert(refreshIndicatorExtent >= 0.0),
-       _refreshIndicatorExtent = refreshIndicatorExtent {
-    this.child = child;
-  }
+       _refreshIndicatorExtent = refreshIndicatorExtent,
+       _hasLayoutExtent = hasLayoutExtent,
+       super(child: child);
 
   RefreshStyle? refreshStyle;
   late BuildContext context;
@@ -189,7 +191,7 @@ class RenderSliverRefresh extends RenderSliverSingleBoxAdapter {
     if (_updateFlag) {
       // ignore_for_file: INVALID_USE_OF_PROTECTED_MEMBER
       // ignore_for_file: INVALID_USE_OF_VISIBLE_FOR_TESTING_MEMBER
-      Scrollable.of(context).position.activity!.applyNewDimensions();
+      Scrollable.of(context).position.activity?.applyNewDimensions();
       _updateFlag = false;
     }
     // The new layout extent this sliver should now have.
@@ -304,9 +306,10 @@ class RenderSliverRefresh extends RenderSliverSingleBoxAdapter {
 
   @override
   void paint(PaintingContext paintContext, Offset offset) {
+    final double paintOffset = paintOffsetY ?? 0.0;
     paintContext.paintChild(
       child!,
-      Offset(offset.dx, offset.dy + paintOffsetY!),
+      Offset(offset.dx, offset.dy + paintOffset),
     );
   }
 
@@ -370,11 +373,9 @@ class RenderSliverLoading extends RenderSliverSingleBoxAdapter {
     bool hasLayoutExtent = false,
     this.shouldFollowContent = false,
     this.hideWhenNotFull = false,
-  }) {
-    _hasLayoutExtent = hasLayoutExtent;
-    this.layoutExtent = layoutExtent;
-    this.child = child;
-  }
+  }) : _layoutExtent = layoutExtent,
+       _hasLayoutExtent = hasLayoutExtent,
+       super(child: child);
 
   bool shouldFollowContent;
   bool hideWhenNotFull;

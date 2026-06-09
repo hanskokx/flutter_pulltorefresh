@@ -107,29 +107,36 @@ class RefreshPhysics extends ScrollPhysics {
 
   @override
   double applyPhysicsToUserOffset(ScrollMetrics position, double offset) {
+    final RefreshController? currentController = controller;
+    final ScrollPhysics? parentPhysics = parent;
+    final RefreshStatus? headerStatus = currentController?.headerMode?.value;
+    if (currentController == null ||
+        parentPhysics == null ||
+        headerStatus == null) {
+      return super.applyPhysicsToUserOffset(position, offset);
+    }
     viewportRender ??= findViewport(
-      controller!.position?.context.storageContext,
+      currentController.position?.context.storageContext,
     );
-    if (controller!.headerMode!.value == RefreshStatus.twoLeveling) {
+    if (headerStatus == RefreshStatus.twoLeveling) {
       if (offset > 0.0) {
-        return parent!.applyPhysicsToUserOffset(position, offset);
+        return parentPhysics.applyPhysicsToUserOffset(position, offset);
       }
     } else {
       if ((offset > 0.0 &&
               viewportRender?.firstChild is! RenderSliverRefresh) ||
           (offset < 0 && viewportRender?.lastChild is! RenderSliverLoading)) {
-        return parent!.applyPhysicsToUserOffset(position, offset);
+        return parentPhysics.applyPhysicsToUserOffset(position, offset);
       }
     }
-    if (position.outOfRange ||
-        controller!.headerMode!.value == RefreshStatus.twoLeveling) {
+    if (position.outOfRange || headerStatus == RefreshStatus.twoLeveling) {
       final double overscrollPastStart = math.max(
         position.minScrollExtent - position.pixels,
         0.0,
       );
       final double overscrollPastEnd = math.max(
         position.pixels -
-            (controller!.headerMode!.value == RefreshStatus.twoLeveling
+            (headerStatus == RefreshStatus.twoLeveling
                 ? 0.0
                 : position.maxScrollExtent),
         0.0,
@@ -177,9 +184,21 @@ class RefreshPhysics extends ScrollPhysics {
 
   @override
   double applyBoundaryConditions(ScrollMetrics position, double value) {
+    final RefreshController? currentController = controller;
+    final ScrollPhysics? parentPhysics = parent;
+    final RefreshStatus? headerStatus = currentController?.headerMode?.value;
+    if (currentController == null ||
+        parentPhysics == null ||
+        headerStatus == null) {
+      return super.applyBoundaryConditions(position, value);
+    }
+    final double maxOver = maxOverScrollExtent ?? double.infinity;
+    final double maxUnder = maxUnderScrollExtent ?? double.infinity;
+    final double topBoundaryLimit = topHitBoundary ?? double.infinity;
+    final double bottomBoundaryLimit = bottomHitBoundary ?? double.infinity;
     final ScrollPosition scrollPosition = position as ScrollPosition;
     viewportRender ??= findViewport(
-      controller!.position?.context.storageContext,
+      currentController.position?.context.storageContext,
     );
     final bool notFull = position.minScrollExtent == position.maxScrollExtent;
     final bool enablePullDown = viewportRender == null
@@ -188,14 +207,14 @@ class RefreshPhysics extends ScrollPhysics {
     final bool enablePullUp = viewportRender == null
         ? false
         : viewportRender!.lastChild is RenderSliverLoading;
-    if (controller!.headerMode!.value == RefreshStatus.twoLeveling) {
+    if (headerStatus == RefreshStatus.twoLeveling) {
       if (position.pixels - value > 0.0) {
-        return parent!.applyBoundaryConditions(position, value);
+        return parentPhysics.applyBoundaryConditions(position, value);
       }
     } else {
       if ((position.pixels - value > 0.0 && !enablePullDown) ||
           (position.pixels - value < 0 && !enablePullUp)) {
-        return parent!.applyBoundaryConditions(position, value);
+        return parentPhysics.applyBoundaryConditions(position, value);
       }
     }
     double topExtra = 0.0;
@@ -210,46 +229,44 @@ class RefreshPhysics extends ScrollPhysics {
     if (enablePullUp) {
       final RenderSliverLoading? sliverFooter =
           viewportRender!.lastChild as RenderSliverLoading?;
+      final BuildContext? storageContext =
+          currentController.position?.context.storageContext;
+      final RefreshConfiguration? conf = storageContext == null
+          ? null
+          : RefreshConfiguration.of(storageContext);
       bottomExtra =
           (!notFull && sliverFooter!.geometry!.scrollExtent != 0) ||
               (notFull &&
-                  controller!.footerStatus == LoadStatus.noMore &&
-                  !RefreshConfiguration.of(
-                    controller!.position!.context.storageContext,
-                  )!.enableLoadingWhenNoData) ||
-              (notFull &&
-                  (RefreshConfiguration.of(
-                        controller!.position!.context.storageContext,
-                      )?.hideFooterWhenNotFull ??
-                      false))
+                  currentController.footerStatus == LoadStatus.noMore &&
+                  !(conf?.enableLoadingWhenNoData ?? false)) ||
+              (notFull && (conf?.hideFooterWhenNotFull ?? false))
           ? 0.0
           : sliverFooter!.layoutExtent;
     }
-    final double topBoundary =
-        position.minScrollExtent - maxOverScrollExtent! - topExtra;
+    final double topBoundary = position.minScrollExtent - maxOver - topExtra;
     final double bottomBoundary =
-        position.maxScrollExtent + maxUnderScrollExtent! + bottomExtra;
+        position.maxScrollExtent + maxUnder + bottomExtra;
 
     if (scrollPosition.activity is BallisticScrollActivity) {
-      if (topHitBoundary != double.infinity) {
-        if (value < -topHitBoundary! && -topHitBoundary! <= position.pixels) {
+      if (topBoundaryLimit != double.infinity) {
+        if (value < -topBoundaryLimit && -topBoundaryLimit <= position.pixels) {
           // hit top edge
-          return value + topHitBoundary!;
+          return value + topBoundaryLimit;
         }
       }
-      if (bottomHitBoundary != double.infinity) {
-        if (position.pixels < bottomHitBoundary! + position.maxScrollExtent &&
-            bottomHitBoundary! + position.maxScrollExtent < value) {
+      if (bottomBoundaryLimit != double.infinity) {
+        if (position.pixels < bottomBoundaryLimit + position.maxScrollExtent &&
+            bottomBoundaryLimit + position.maxScrollExtent < value) {
           // hit bottom edge
-          return value - bottomHitBoundary! - position.maxScrollExtent;
+          return value - bottomBoundaryLimit - position.maxScrollExtent;
         }
       }
     }
-    if (maxOverScrollExtent != double.infinity &&
+    if (maxOver != double.infinity &&
         value < topBoundary &&
         topBoundary < position.pixels) // hit top edge
       return value - topBoundary;
-    if (maxUnderScrollExtent != double.infinity &&
+    if (maxUnder != double.infinity &&
         position.pixels < bottomBoundary &&
         bottomBoundary < value) {
       // hit bottom edge
@@ -258,11 +275,11 @@ class RefreshPhysics extends ScrollPhysics {
 
     // check user is dragging,it is import,some devices may not bounce with different frame and time,bouncing return the different velocity
     if (scrollPosition.activity is DragScrollActivity) {
-      if (maxOverScrollExtent != double.infinity &&
+      if (maxOver != double.infinity &&
           value < position.pixels &&
           position.pixels <= topBoundary) // underscroll
         return value - position.pixels;
-      if (maxUnderScrollExtent != double.infinity &&
+      if (maxUnder != double.infinity &&
           bottomBoundary <= position.pixels &&
           position.pixels < value) // overscroll
         return value - position.pixels;
@@ -275,8 +292,16 @@ class RefreshPhysics extends ScrollPhysics {
     ScrollMetrics position,
     double velocity,
   ) {
+    final RefreshController? currentController = controller;
+    final ScrollPhysics? parentPhysics = parent;
+    final RefreshStatus? headerStatus = currentController?.headerMode?.value;
+    if (currentController == null ||
+        parentPhysics == null ||
+        headerStatus == null) {
+      return super.createBallisticSimulation(position, velocity);
+    }
     viewportRender ??= findViewport(
-      controller!.position?.context.storageContext,
+      currentController.position?.context.storageContext,
     );
 
     final bool enablePullDown = viewportRender == null
@@ -285,18 +310,17 @@ class RefreshPhysics extends ScrollPhysics {
     final bool enablePullUp = viewportRender == null
         ? false
         : viewportRender!.lastChild is RenderSliverLoading;
-    if (controller!.headerMode!.value == RefreshStatus.twoLeveling) {
+    if (headerStatus == RefreshStatus.twoLeveling) {
       if (velocity < 0.0) {
-        return parent!.createBallisticSimulation(position, velocity);
+        return parentPhysics.createBallisticSimulation(position, velocity);
       }
     } else if (!position.outOfRange) {
       if ((velocity < 0.0 && !enablePullDown) ||
           (velocity > 0 && !enablePullUp)) {
-        return parent!.createBallisticSimulation(position, velocity);
+        return parentPhysics.createBallisticSimulation(position, velocity);
       }
     }
-    if ((position.pixels > 0 &&
-            controller!.headerMode!.value == RefreshStatus.twoLeveling) ||
+    if ((position.pixels > 0 && headerStatus == RefreshStatus.twoLeveling) ||
         position.outOfRange) {
       return BouncingScrollSimulation(
         spring: springDescription ?? spring,
@@ -304,8 +328,7 @@ class RefreshPhysics extends ScrollPhysics {
         // -1.0 avoid stop springing back ,and release gesture
         velocity: velocity * 0.91,
         leadingExtent: position.minScrollExtent,
-        trailingExtent:
-            controller!.headerMode!.value == RefreshStatus.twoLeveling
+        trailingExtent: headerStatus == RefreshStatus.twoLeveling
             ? 0.0
             : position.maxScrollExtent,
         tolerance: toleranceFor(position),

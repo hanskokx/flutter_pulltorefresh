@@ -4,6 +4,7 @@
  * Time:  2019-09-08 14:44
  */
 
+import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
 
 // 在不自定义的默认情况下,当你拖到顶端不能再拖的时候会出现光晕,假如你只想在撞击顶部时看到光晕的情况
@@ -11,6 +12,15 @@ import "package:flutter/material.dart";
 
 // Android平台 自定义刷新光晕效果
 class RefreshScrollBehavior extends ScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.stylus,
+    PointerDeviceKind.invertedStylus,
+    PointerDeviceKind.trackpad,
+  };
+
   @override
   Widget buildOverscrollIndicator(
     BuildContext context,

@@ -1122,7 +1122,7 @@ class RefreshConfiguration extends InheritedWidget {
 
 class RefreshNotifier<T> extends ChangeNotifier implements ValueListenable<T> {
   /// Creates a [ChangeNotifier] that wraps this value.
-  RefreshNotifier(this._value);
+  RefreshNotifier(T value) : _value = value;
   T _value;
 
   @override
