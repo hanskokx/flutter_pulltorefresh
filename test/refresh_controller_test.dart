@@ -76,10 +76,13 @@ void testRequestFun(bool full) {
     refreshController.loadComplete();
     await tester.pump(const Duration(milliseconds: 300));
     refreshController.position!.jumpTo(0);
-    await refreshController.requestTwoLevel().timeout(
-      const Duration(seconds: 1),
-      onTimeout: () {},
-    );
+    refreshController
+        .requestTwoLevel()
+        .timeout(const Duration(seconds: 1), onTimeout: () {})
+        .ignore();
+    for (int i = 0; i < 10 && tester.binding.transientCallbackCount > 0; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
     await tester.pump(const Duration(milliseconds: 120));
     expect(
       refreshController.headerStatus,
@@ -128,14 +131,16 @@ void testRequestFun(bool full) {
         ),
       ),
     );
-    await refreshController.requestRefresh(needCallback: false);
-    for (int i = 0; i < 30 && tester.binding.transientCallbackCount > 0; i++) {
+    refreshController.requestRefresh(needCallback: false)?.ignore();
+    // Pump 700ms fake time to drain 50ms delay + 500ms default animation.
+    for (int i = 0; i < 7; i++) {
       await tester.pump(const Duration(milliseconds: 100));
     }
     expect(timerr, 0);
 
-    await refreshController.requestLoading(needCallback: false);
-    for (int i = 0; i < 30 && tester.binding.transientCallbackCount > 0; i++) {
+    refreshController.requestLoading(needCallback: false)?.ignore();
+    // Pump 500ms fake time to drain 50ms delay + 300ms default animation.
+    for (int i = 0; i < 5; i++) {
       await tester.pump(const Duration(milliseconds: 100));
     }
     expect(timerr, 0);
