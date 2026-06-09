@@ -75,21 +75,39 @@ class RenderSliverRefresh extends RenderSliverSingleBoxAdapter {
     required double refreshIndicatorExtent,
     required bool hasLayoutExtent,
     RenderBox? child,
-    this.paintOffsetY,
-    this.refreshStyle,
+    double? paintOffsetY,
+    RefreshStyle? refreshStyle,
   }) : assert(refreshIndicatorExtent >= 0.0),
        _refreshIndicatorExtent = refreshIndicatorExtent,
        _hasLayoutExtent = hasLayoutExtent,
+       _paintOffsetY = paintOffsetY,
+       _refreshStyle = refreshStyle,
        super(child: child);
 
-  RefreshStyle? refreshStyle;
+  RefreshStyle? get refreshStyle => _refreshStyle;
+  RefreshStyle? _refreshStyle;
+
+  set refreshStyle(RefreshStyle? value) {
+    if (value == _refreshStyle) return;
+    _refreshStyle = value;
+    markNeedsLayout();
+  }
+
   late BuildContext context;
 
   // The amount of layout space the indicator should occupy in the sliver in a
   // resting state when in the refreshing mode.
   double get refreshIndicatorLayoutExtent => _refreshIndicatorExtent;
   double _refreshIndicatorExtent;
-  double? paintOffsetY;
+  double? get paintOffsetY => _paintOffsetY;
+  double? _paintOffsetY;
+
+  set paintOffsetY(double? value) {
+    if (value == _paintOffsetY) return;
+    _paintOffsetY = value;
+    markNeedsPaint();
+  }
+
   // need to trigger shouldAceppty user offset ,else it will not limit scroll when enter twolevel or exit
   // also it will crash if you call applyNewDimession when the state change
   // I don't know why flutter limit it, no choice
@@ -150,6 +168,7 @@ class RenderSliverRefresh extends RenderSliverSingleBoxAdapter {
   }
 
   set updateFlag(bool u) {
+    if (_updateFlag == u) return;
     _updateFlag = u;
     markNeedsLayout();
   }
