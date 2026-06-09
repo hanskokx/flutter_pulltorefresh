@@ -54,9 +54,9 @@ class SliverRefresh extends SingleChildRenderObjectWidget {
     BuildContext context,
     covariant RenderSliverRefresh renderObject,
   ) {
-    final RefreshStatus mode = SmartRefresher.of(
-      context,
-    )!.controller.headerMode!.value;
+    final RefreshStatus mode =
+        SmartRefresher.of(context)?.controller.headerMode?.value ??
+        RefreshStatus.idle;
     renderObject
       ..refreshIndicatorLayoutExtent = refreshIndicatorLayoutExtent
       ..hasLayoutExtent = floating

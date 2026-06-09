@@ -289,7 +289,7 @@ abstract class RefreshIndicatorState<T extends RefreshIndicator>
       if (conf.enableRefreshVibrate) {
         HapticFeedback.vibrate();
       }
-      if (currentRefresher.onRefresh != null) currentRefresher.onRefresh!();
+      currentRefresher.onRefresh?.call();
     } else if (mode == RefreshStatus.twoLevelOpening) {
       floating = true;
       state.setCanDrag(false);
@@ -306,7 +306,7 @@ abstract class RefreshIndicatorState<T extends RefreshIndicator>
               mode = RefreshStatus.twoLeveling;
             });
         if (currentRefresher.onTwoLevel != null) {
-          currentRefresher.onTwoLevel!(true);
+          currentRefresher.onTwoLevel?.call(true);
         }
       });
     } else if (mode == RefreshStatus.twoLevelClosing) {
@@ -314,7 +314,7 @@ abstract class RefreshIndicatorState<T extends RefreshIndicator>
       state.setCanDrag(false);
       update();
       if (currentRefresher.onTwoLevel != null) {
-        currentRefresher.onTwoLevel!(false);
+        currentRefresher.onTwoLevel?.call(false);
       }
     } else if (mode == RefreshStatus.twoLeveling) {
       state.setCanDrag(conf.enableScrollWhenTwoLevel);
@@ -459,7 +459,8 @@ abstract class LoadIndicatorState<T extends LoadIndicator> extends State<T>
         mode == LoadStatus.noMore) {
       // #292,#265,#208
       // stop the slow bouncing when load more too fast
-      if (position.activity!.velocity < 0 &&
+      final ScrollActivity? currentActivity = position.activity;
+      if ((currentActivity?.velocity ?? 0.0) < 0 &&
           _lastMode == LoadStatus.loading &&
           !position.outOfRange &&
           position is ScrollActivityDelegate) {
@@ -477,9 +478,7 @@ abstract class LoadIndicatorState<T extends LoadIndicator> extends State<T>
       if (conf.enableLoadMoreVibrate) {
         HapticFeedback.vibrate();
       }
-      if (currentRefresher.onLoading != null) {
-        currentRefresher.onLoading!();
-      }
+      currentRefresher.onLoading?.call();
       if (widget.loadStyle == LoadStyle.showWhenLoading) {
         floating = true;
       }
