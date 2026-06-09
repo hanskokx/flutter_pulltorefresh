@@ -4,19 +4,23 @@
  * Time:  2019-06-24 17:23
  */
 
-import 'dart:async';
-import 'dart:convert' show json;
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import '../../Item.dart';
-import 'package:http/http.dart' as HTTP;
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import "dart:async";
+import "dart:convert" show json;
+
+import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
+import "package:http/http.dart" as HTTP;
+import "package:pull_to_refresh/pull_to_refresh.dart";
+
+import "../../item.dart";
 
 /*
    this example will show you how to implements horizontal refresh or reverse,
    the main point is in child scrollDirection attr
  */
 class HorizontalRefresh extends StatefulWidget {
+  const HorizontalRefresh({super.key});
+
   @override
   _HorizontalRefreshState createState() => _HorizontalRefreshState();
 }
@@ -24,34 +28,44 @@ class HorizontalRefresh extends StatefulWidget {
 class _HorizontalRefreshState extends State<HorizontalRefresh>
     with TickerProviderStateMixin {
   RefreshController _controller1 = RefreshController();
-  RefreshController _controller2 = RefreshController();
+  final RefreshController _controller2 = RefreshController();
   int indexPage = 0;
   List<String> data = [];
 
   void _fetch() {
     HTTP
         .get(
-            'https://gank.io/api/v2/data/category/Girl/type/Girl/page/$indexPage/count/10')
+          Uri.parse(
+            "https://gank.io/api/v2/data/category/Girl/type/Girl/page/$indexPage/count/10",
+          ),
+        )
         .then((HTTP.Response response) {
-      Map map = json.decode(response.body);
-      return map["data"];
-    }).then((array) {
-      for (var item in array) {
-        data.add(item["url"]);
-      }
-      if (mounted) setState(() {});
-      _controller1.loadComplete();
-      indexPage++;
-    }).catchError((_) {
-      print("error");
-      _controller1.loadComplete();
-    });
+          final Map<String, dynamic> map =
+              json.decode(response.body) as Map<String, dynamic>;
+          return map["data"] as List<dynamic>? ?? const <dynamic>[];
+        })
+        .then((List<dynamic> array) {
+          for (final dynamic item in array) {
+            final Map<String, dynamic> mapItem = item as Map<String, dynamic>;
+            final String? url = mapItem["url"] as String?;
+            if (url != null) {
+              data.add(url);
+            }
+          }
+          if (mounted) setState(() {});
+          _controller1.loadComplete();
+          indexPage++;
+        })
+        .catchError((_) {
+          debugPrint("error");
+          _controller1.loadComplete();
+        });
   }
 
   void _onRefresh() {
     Future.delayed(const Duration(milliseconds: 2009)).then((val) {
       _controller1.refreshCompleted();
-//                refresher.sendStatus(RefreshStatus.completed);
+      //                refresher.sendStatus(RefreshStatus.completed);
     });
   }
 
@@ -61,11 +75,9 @@ class _HorizontalRefreshState extends State<HorizontalRefresh>
     });
   }
 
-  Widget buildImage(context, index) {
+  Widget buildImage(BuildContext context, int index) {
     return GestureDetector(
-      child: Item1(
-        url: data[index],
-      ),
+      child: Item1(url: data[index]),
       onTap: () {
         _controller1.requestRefresh();
       },
@@ -74,7 +86,6 @@ class _HorizontalRefreshState extends State<HorizontalRefresh>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _controller1 = RefreshController();
     _fetch();
@@ -84,7 +95,8 @@ class _HorizontalRefreshState extends State<HorizontalRefresh>
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Container(
+        SizedBox(
+          height: 200.0,
           child: SmartRefresher(
             enablePullDown: true,
             enablePullUp: true,
@@ -93,37 +105,27 @@ class _HorizontalRefreshState extends State<HorizontalRefresh>
             footer: ClassicFooter(
               iconPos: IconPosition.top,
               outerBuilder: (child) {
-                return Container(
-                  width: 80.0,
-                  child: Center(
-                    child: child,
-                  ),
-                );
+                return SizedBox(width: 80.0, child: Center(child: child));
               },
             ),
             header: ClassicHeader(
               iconPos: IconPosition.top,
               outerBuilder: (child) {
-                return Container(
-                  width: 80.0,
-                  child: Center(
-                    child: child,
-                  ),
-                );
+                return SizedBox(width: 80.0, child: Center(child: child));
               },
             ),
             onLoading: _onLoading,
             child: ListView.builder(
               itemCount: data.length,
               scrollDirection: Axis.horizontal,
-              physics: ClampingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               itemBuilder: buildImage,
             ),
           ),
-          height: 200.0,
         ),
         Expanded(
-          child: Container(
+          child: SizedBox(
+            height: 200.0,
             child: SmartRefresher(
               enablePullDown: true,
               enablePullUp: true,
@@ -134,15 +136,10 @@ class _HorizontalRefreshState extends State<HorizontalRefresh>
               footer: ClassicFooter(
                 iconPos: IconPosition.top,
                 outerBuilder: (child) {
-                  return Container(
-                    width: 80.0,
-                    child: Center(
-                      child: child,
-                    ),
-                  );
+                  return SizedBox(width: 80.0, child: Center(child: child));
                 },
               ),
-              header: WaterDropMaterialHeader(),
+              header: const WaterDropMaterialHeader(),
               onLoading: () async {
                 await Future.delayed(const Duration(milliseconds: 1000));
                 if (mounted) setState(() {});
@@ -151,28 +148,21 @@ class _HorizontalRefreshState extends State<HorizontalRefresh>
               child: ListView.builder(
                 reverse: true,
                 itemCount: data.length,
-                physics: ClampingScrollPhysics(),
-                itemBuilder: (c, i) => Item(
-                  title: "data $i",
-                ),
+                physics: const ClampingScrollPhysics(),
+                itemBuilder: (c, i) => Item(title: "data $i"),
               ),
             ),
-            height: 200.0,
           ),
-        )
+        ),
       ],
     );
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => false;
 }
 
 class Item1 extends StatefulWidget {
   final String url;
 
-  Item1({this.url});
+  const Item1({required this.url, super.key});
 
   @override
   _ItemState createState() => _ItemState();
@@ -181,18 +171,14 @@ class Item1 extends StatefulWidget {
 class _ItemState extends State<Item1> {
   @override
   Widget build(BuildContext context) {
-    if (widget.url == null) return Container();
     return FadeInImage(
-      placeholder: AssetImage("images/empty.png"),
-      image: NetworkImage(
-        widget.url,
-      ),
+      placeholder: const AssetImage("images/empty.png"),
+      image: NetworkImage(widget.url),
     );
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 }

@@ -4,28 +4,27 @@
  * Time:  2020-06-21 13:43
  */
 
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import "package:flutter/material.dart";
+import "package:pull_to_refresh/pull_to_refresh.dart";
 
 /*
     achieve requirement
     tap button to trigger refresh insteal of pull down refresh
  */
 class TapButtonRefreshExample extends StatefulWidget {
-  TapButtonRefreshExample();
+  const TapButtonRefreshExample({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _TapButtonRefreshExampleState();
   }
 }
 
 class _TapButtonRefreshExampleState extends State<TapButtonRefreshExample> {
   List<String> data = [];
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
   bool _enablePullDown = false;
 
   Widget buildEmpty() {
@@ -38,11 +37,8 @@ class _TapButtonRefreshExampleState extends State<TapButtonRefreshExample> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Image.asset(
-          "images/empty1.png",
-          fit: BoxFit.cover,
-        ),
-        Text("没数据,请点击按钮刷新")
+        Image.asset("images/empty1.png", fit: BoxFit.cover),
+        const Text("没数据,请点击按钮刷新"),
       ],
     );
     /* second way
@@ -61,10 +57,9 @@ class _TapButtonRefreshExampleState extends State<TapButtonRefreshExample> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _refreshController.headerMode.addListener(() {
-      if (_refreshController.headerMode.value == RefreshStatus.idle) {
+    _refreshController.headerMode?.addListener(() {
+      if (_refreshController.headerMode?.value == RefreshStatus.idle) {
         Future.delayed(const Duration(milliseconds: 20)).then((value) {
           _enablePullDown = false;
           setState(() {});
@@ -75,13 +70,12 @@ class _TapButtonRefreshExampleState extends State<TapButtonRefreshExample> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       body: SmartRefresher(
         controller: _refreshController,
-        enablePullUp: data.length != 0,
+        enablePullUp: data.isNotEmpty,
         enablePullDown: _enablePullDown,
-        header: ClassicHeader(),
+        header: const ClassicHeader(),
         onRefresh: () async {
           await Future.delayed(const Duration(milliseconds: 2000));
           if (mounted)
@@ -95,7 +89,7 @@ class _TapButtonRefreshExampleState extends State<TapButtonRefreshExample> {
             });
           _refreshController.refreshCompleted();
         },
-        child: data.length == 0
+        child: data.isEmpty
             ? buildEmpty()
             : ListView.builder(
                 itemBuilder: (c, i) => Text(data[i]),
@@ -104,7 +98,7 @@ class _TapButtonRefreshExampleState extends State<TapButtonRefreshExample> {
               ),
       ),
       appBar: AppBar(
-        title: Text("点击按钮刷新"),
+        title: const Text("点击按钮刷新"),
         actions: [
           GestureDetector(
             onTap: () {
@@ -114,8 +108,8 @@ class _TapButtonRefreshExampleState extends State<TapButtonRefreshExample> {
                 _refreshController.requestRefresh();
               });
             },
-            child: Icon(Icons.refresh),
-          )
+            child: const Icon(Icons.refresh),
+          ),
         ],
       ),
     );

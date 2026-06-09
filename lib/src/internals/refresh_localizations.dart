@@ -4,9 +4,8 @@
  * Time:  2019-09-06 23:18
  */
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import "package:flutter/foundation.dart";
+import "package:flutter/material.dart";
 
 /// Implementation of localized strings for the [ClassicHeader],[ClassicFooter],[TwoLevelHeader]
 ///
@@ -67,19 +66,19 @@ class RefreshLocalizations {
   RefreshLocalizations(this.locale);
 
   Map<String, RefreshString> values = {
-    'en': EnRefreshString(),
-    'zh': ChRefreshString(),
-    'fr': FrRefreshString(),
-    'ru': RuRefreshString(),
-    'uk': UkRefreshString(),
-    'it': ItRefreshString(),
-    'ja': JpRefreshString(),
-    'de': DeRefreshString(),
-    'es': EsRefreshString(),
-    'nl': NlRefreshString(),
-    'sv': SvRefreshString(),
-    'pt': PtRefreshString(),
-    'ko': KrRefreshString(),
+    "en": EnRefreshString(),
+    "zh": ChRefreshString(),
+    "fr": FrRefreshString(),
+    "ru": RuRefreshString(),
+    "uk": UkRefreshString(),
+    "it": ItRefreshString(),
+    "ja": JpRefreshString(),
+    "de": DeRefreshString(),
+    "es": EsRefreshString(),
+    "nl": NlRefreshString(),
+    "sv": SvRefreshString(),
+    "pt": PtRefreshString(),
+    "ko": KrRefreshString(),
   };
 
   RefreshString? get currentLocalization {
@@ -104,26 +103,27 @@ class RefreshLocalizationsDelegate
   @override
   bool isSupported(Locale locale) {
     return [
-      'en',
-      'zh',
-      'fr',
-      'ru',
-      'uk',
-      'ja',
-      'it',
-      'de',
-      'ko',
-      'pt',
-      'sv',
-      'nl',
-      'es'
+      "en",
+      "zh",
+      "fr",
+      "ru",
+      "uk",
+      "ja",
+      "it",
+      "de",
+      "ko",
+      "pt",
+      "sv",
+      "nl",
+      "es",
     ].contains(locale.languageCode);
   }
 
   @override
   Future<RefreshLocalizations> load(Locale locale) {
     return SynchronousFuture<RefreshLocalizations>(
-        RefreshLocalizations(locale));
+      RefreshLocalizations(locale),
+    );
   }
 
   @override

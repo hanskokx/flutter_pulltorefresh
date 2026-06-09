@@ -1,23 +1,25 @@
-import 'package:example/other/refresh_glowindicator.dart';
-import 'package:example/ui/MainActivity.dart';
-import 'package:example/ui/SecondActivity.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'ui/indicator/base/IndicatorActivity.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import "package:example/other/refresh_glowindicator.dart";
+import "package:example/ui/main_activity.dart";
+import "package:example/ui/second_activity.dart";
+import "package:flutter/material.dart";
+import "package:flutter_localizations/flutter_localizations.dart";
+import "package:pull_to_refresh/pull_to_refresh.dart";
 
-void main() => runApp(MyApp());
+import "ui/indicator/base/indicator_activity.dart";
+
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return RefreshConfiguration(
       footerTriggerDistance: 15,
       dragSpeedRatio: 0.91,
-      headerBuilder: () => MaterialClassicHeader(),
-      footerBuilder: () => ClassicFooter(),
+      headerBuilder: () => const MaterialClassicHeader(),
+      footerBuilder: () => const ClassicFooter(),
       enableLoadingWhenNoData: false,
       enableRefreshVibrate: false,
       enableLoadMoreVibrate: false,
@@ -26,61 +28,64 @@ class MyApp extends StatelessWidget {
         return false;
       },
       child: MaterialApp(
-        title: 'Pulltorefresh Demo',
+        title: "Pulltorefresh Demo",
         debugShowCheckedModeBanner: false,
         builder: (context, child) {
           return ScrollConfiguration(
-            child: child,
             behavior: RefreshScrollBehavior(),
+            child: child ?? const SizedBox.shrink(),
           );
         },
         theme: ThemeData(
-            // This is the theme of your application.
-            //s
-            // Try running your application with "flutter run". You'll see the
-            // application has a blue toolbar. Then, without quitting the app, try
-            // changing the primarySwatch below to Colors.green and then invoke
-            // "hot reload" (press "r" in the console where you ran "flutter run",
-            // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
-            // counter didn't reset back to zero; the application is not restarted.
-            primarySwatch: Colors.blue,
-            primaryColor: Colors.greenAccent),
-        localizationsDelegates: [
+          // This is the theme of your application.
+          //s
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
+          // counter didn't reset back to zero; the application is not restarted.
+          primarySwatch: Colors.blue,
+          primaryColor: Colors.greenAccent,
+        ),
+        localizationsDelegates: const [
           RefreshLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate
+          GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: [
-          const Locale('en'),
-          const Locale('zh'),
-          const Locale('ja'),
-          const Locale('uk'),
-          const Locale('it'),
-          const Locale('ru'),
-          const Locale('fr'),
-          const Locale('es'),
-          const Locale('nl'),
-          const Locale('sv'),
-          const Locale('pt'),
-          const Locale('ko'),
+        supportedLocales: const [
+          Locale("en"),
+          Locale("zh"),
+          Locale("ja"),
+          Locale("uk"),
+          Locale("it"),
+          Locale("ru"),
+          Locale("fr"),
+          Locale("es"),
+          Locale("nl"),
+          Locale("sv"),
+          Locale("pt"),
+          Locale("ko"),
         ],
-        locale: const Locale('zh'),
+        locale: const Locale("zh"),
         localeResolutionCallback:
-            (Locale locale, Iterable<Locale> supportedLocales) {
-          //print("change language");
-          return locale;
-        },
-        home: MainActivity(title: 'Pulltorefresh'),
+            (Locale? locale, Iterable<Locale> supportedLocales) {
+              if (locale == null) {
+                return supportedLocales.first;
+              }
+              return supportedLocales.contains(locale)
+                  ? locale
+                  : supportedLocales.first;
+            },
+        home: const MainActivity(title: "Pulltorefresh"),
         routes: {
           "sec": (BuildContext context) {
-            return SecondActivity(
-              title: "SecondAct",
-            );
+            return const SecondActivity(title: "SecondAct");
           },
           "indicator": (BuildContext context) {
-            return IndicatorActivity();
-          }
+            return const IndicatorActivity();
+          },
         },
       ),
     );

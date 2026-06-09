@@ -13,37 +13,37 @@
    second step:  use LayoutBuilder get the Widget height
    third step: Use your judgment to decide whether to hide footer, enablePullUp = false
  */
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import "package:flutter/material.dart";
+import "package:flutter/widgets.dart";
+import "package:pull_to_refresh/pull_to_refresh.dart";
 
 class HideFooterManual extends StatefulWidget {
+  const HideFooterManual({super.key});
+
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return HideFooterManualState();
   }
 }
 
 class HideFooterManualState extends State<HideFooterManual> {
-  RefreshController _controller = RefreshController();
+  final RefreshController _controller = RefreshController();
 
   List<String> strs = ["1", "2"];
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return RefreshConfiguration.copyAncestor(
       context: context,
+      hideFooterWhenNotFull: false,
       child: LayoutBuilder(
         builder: (b, c) {
-          double refresherHeight = c.biggest.height -
+          final double refresherHeight =
+              c.biggest.height -
               50.0; // 50.0 is Container's height before SmartRefresher
           return Column(
             children: <Widget>[
-              Container(
-                height: 50.0,
-              ),
+              Container(height: 50.0),
               Expanded(
                 child: SmartRefresher(
                   controller: _controller,
@@ -63,19 +63,19 @@ class HideFooterManualState extends State<HideFooterManual> {
                     slivers: <Widget>[
                       SliverFixedExtentList(
                         delegate: SliverChildBuilderDelegate(
-                            (c, i) => Text(strs[i]),
-                            childCount: strs.length),
+                          (c, i) => Text(strs[i]),
+                          childCount: strs.length,
+                        ),
                         itemExtent: 100.0,
-                      )
+                      ),
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           );
         },
       ),
-      hideFooterWhenNotFull: false,
     );
   }
 }

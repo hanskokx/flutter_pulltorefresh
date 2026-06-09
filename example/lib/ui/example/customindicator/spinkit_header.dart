@@ -8,9 +8,10 @@
    here,I use SpinKit as a
  */
 
-import 'package:flutter/material.dart';
-import '../../../other/custom_spinkit.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import "package:flutter/material.dart";
+import "package:pull_to_refresh/pull_to_refresh.dart";
+
+import "../../../other/custom_spinkit.dart";
 
 /*
    this example show you how to custom your indicator with CustomHeader and CustomFooter,
@@ -20,29 +21,37 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
  */
 class CustomHeaderExample extends StatefulWidget {
+  const CustomHeaderExample({super.key});
+
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _CustomHeaderExampleState();
   }
 }
 
 class _CustomHeaderExampleState extends State<CustomHeaderExample>
     with TickerProviderStateMixin {
-  AnimationController _anicontroller, _scaleController;
-  AnimationController _footerController;
-  RefreshController _refreshController = RefreshController();
+  late AnimationController _anicontroller;
+  late AnimationController _scaleController;
+  late AnimationController _footerController;
+  final RefreshController _refreshController = RefreshController();
   int count = 20;
   @override
   void initState() {
-    // TODO: implement initState
     _anicontroller = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 2000));
-    _scaleController =
-        AnimationController(value: 0.0, vsync: this, upperBound: 1.0);
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+    _scaleController = AnimationController(
+      value: 0.0,
+      vsync: this,
+      upperBound: 1.0,
+    );
     _footerController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 2000));
-    _refreshController.headerMode.addListener(() {
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+    _refreshController.headerMode?.addListener(() {
       if (_refreshController.headerStatus == RefreshStatus.idle) {
         _scaleController.value = 0.0;
         _anicontroller.reset();
@@ -55,7 +64,6 @@ class _CustomHeaderExampleState extends State<CustomHeaderExample>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _refreshController.dispose();
     _scaleController.dispose();
     _footerController.dispose();
@@ -65,48 +73,69 @@ class _CustomHeaderExampleState extends State<CustomHeaderExample>
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return Container(
-      child: SmartRefresher(
-        enablePullUp: true,
-        controller: _refreshController,
-        onRefresh: () async {
-          await Future.delayed(Duration(milliseconds: 1000));
-          _refreshController.refreshCompleted();
+    return SmartRefresher(
+      enablePullUp: true,
+      controller: _refreshController,
+      onRefresh: () async {
+        await Future.delayed(const Duration(milliseconds: 1000));
+        _refreshController.refreshCompleted();
+      },
+      onLoading: () async {
+        await Future.delayed(const Duration(milliseconds: 1000));
+        count += 4;
+        setState(() {});
+        _refreshController.loadComplete();
+      },
+      footer: CustomFooter(
+        onModeChange: (mode) {
+          if (mode == LoadStatus.loading) {
+            _scaleController.value = 0.0;
+            _footerController.repeat();
+          } else {
+            _footerController.reset();
+          }
         },
-        onLoading: () async {
-          await Future.delayed(Duration(milliseconds: 1000));
-          count += 4;
-          setState(() {});
-          _refreshController.loadComplete();
+        builder: (context, mode) {
+          Widget child;
+          switch (mode) {
+            case LoadStatus.failed:
+              child = const Text("failed,click retry");
+            case LoadStatus.noMore:
+              child = const Text("no more data");
+            default:
+              child = SpinKitFadingCircle(
+                size: 30.0,
+                animationController: _footerController,
+                itemBuilder: (_, int index) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: index.isEven ? Colors.red : Colors.green,
+                    ),
+                  );
+                },
+              );
+          }
+          return SizedBox(height: 60, child: Center(child: child));
         },
-        child: ListView.builder(
-          itemBuilder: (c, i) => Card(),
-          itemExtent: 100,
-          itemCount: count,
-        ),
-        footer: CustomFooter(
-          onModeChange: (mode) {
-            if (mode == LoadStatus.loading) {
-              _scaleController.value = 0.0;
-              _footerController.repeat();
-            } else {
-              _footerController.reset();
-            }
-          },
-          builder: (context, mode) {
-            Widget child;
-            switch (mode) {
-              case LoadStatus.failed:
-                child = Text("failed,click retry");
-                break;
-              case LoadStatus.noMore:
-                child = Text("no more data");
-                break;
-              default:
-                child = SpinKitFadingCircle(
+      ),
+      header: CustomHeader(
+        refreshStyle: RefreshStyle.behind,
+        onOffsetChange: (offset) {
+          if (_refreshController.headerMode?.value !=
+              RefreshStatus.refreshing) {
+            _scaleController.value = offset / 80.0;
+          }
+        },
+        builder: (c, m) {
+          return Container(
+            alignment: Alignment.center,
+            child: FadeTransition(
+              opacity: _scaleController,
+              child: ScaleTransition(
+                scale: _scaleController,
+                child: SpinKitFadingCircle(
                   size: 30.0,
-                  animationController: _footerController,
+                  animationController: _anicontroller,
                   itemBuilder: (_, int index) {
                     return DecoratedBox(
                       decoration: BoxDecoration(
@@ -114,46 +143,16 @@ class _CustomHeaderExampleState extends State<CustomHeaderExample>
                       ),
                     );
                   },
-                );
-                break;
-            }
-            return Container(
-              height: 60,
-              child: Center(
-                child: child,
-              ),
-            );
-          },
-        ),
-        header: CustomHeader(
-          refreshStyle: RefreshStyle.Behind,
-          onOffsetChange: (offset) {
-            if (_refreshController.headerMode.value != RefreshStatus.refreshing)
-              _scaleController.value = offset / 80.0;
-          },
-          builder: (c, m) {
-            return Container(
-              child: FadeTransition(
-                opacity: _scaleController,
-                child: ScaleTransition(
-                  child: SpinKitFadingCircle(
-                    size: 30.0,
-                    animationController: _anicontroller,
-                    itemBuilder: (_, int index) {
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: index.isEven ? Colors.red : Colors.green,
-                        ),
-                      );
-                    },
-                  ),
-                  scale: _scaleController,
                 ),
               ),
-              alignment: Alignment.center,
-            );
-          },
-        ),
+            ),
+          );
+        },
+      ),
+      child: ListView.builder(
+        itemBuilder: (c, i) => const Card(),
+        itemExtent: 100,
+        itemCount: count,
       ),
     );
   }

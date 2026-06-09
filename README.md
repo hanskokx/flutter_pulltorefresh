@@ -3,7 +3,7 @@
   <img src="https://img.shields.io/pub/v/pull_to_refresh.svg"/>
 </a>
 <a href="https://flutter.dev/">
-  <img src="https://img.shields.io/badge/flutter-%3E%3D%202.0.0-green.svg"/>
+  <img src="https://img.shields.io/badge/flutter-%3E%3D%203.0.0-green.svg"/>
 </a>
 <a href="https://opensource.org/licenses/MIT">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg"/>
@@ -12,6 +12,14 @@
 ## Intro
 a widget provided to the flutter scroll component drop-down refresh and pull up load.support android and ios.
 If you are Chinese,click here([中文文档](https://github.com/peng8350/flutter_pulltorefresh/blob/master/README_CN.md))
+
+## Compatibility
+* Dart SDK: >=3.12.1 <4.0.0
+* Flutter: >=3.0.0
+
+## Modernization Status
+* Phase 1 completed: package library and tests have been modernized and validated on current Flutter/Dart tooling.
+* Example app modernization is intentionally deferred to Phase 2.
 
 
 
@@ -121,7 +129,6 @@ simple example,***It must be noted here that ListView must be the child of Smart
   // from 1.5.0, it is not necessary to add this line
   //@override
  // void dispose() {
-    // TODO: implement dispose
   //  _refreshController.dispose();
   //  super.dispose();
  // }
@@ -182,18 +189,18 @@ attributes that are not empty.
 
 
 ### Examples
-|Style| [basic](example/lib/ui/example/useStage/basic.dart) | [header in other place](example/lib/ui/example/customindicator/link_header_example.dart) | [reverse + horizontal](example/lib/ui/example/useStage/horizontal+reverse.dart) |
-|:---:|:---:|:---:|:---:|
-|| ![](arts/example1.gif) | ![](arts/example2.gif) |![](arts/example3.gif) |
+| Style | [basic](example/lib/ui/example/useStage/basic.dart) | [header in other place](example/lib/ui/example/customindicator/link_header_example.dart) | [reverse + horizontal](example/lib/ui/example/useStage/horizontal+reverse.dart) |
+| :---: | :-------------------------------------------------: | :--------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
+|       |               ![](arts/example1.gif)                |                                  ![](arts/example2.gif)                                  |                             ![](arts/example3.gif)                              |
 
-|Style|  [twoLevel](example/lib/ui/example/useStage/twolevel_refresh.dart) |[use with other widgets](example/lib/ui/example/otherwidget) |  [chat](example/lib/ui/example/useStage/qq_chat_list.dart) |
-|:---:|:---:|:---:|:---:|
-||  ![](arts/example4.gif) |![](arts/example5.gif) | ![](arts/example6.gif) |
+| Style | [twoLevel](example/lib/ui/example/useStage/twolevel_refresh.dart) | [use with other widgets](example/lib/ui/example/otherwidget) | [chat](example/lib/ui/example/useStage/qq_chat_list.dart) |
+| :---: | :---------------------------------------------------------------: | :----------------------------------------------------------: | :-------------------------------------------------------: |
+|       |                      ![](arts/example4.gif)                       |                    ![](arts/example5.gif)                    |                  ![](arts/example6.gif)                   |
 
 
-|Style| [simple custom header(使用SpinKit)](example/lib/ui/example/customindicator/spinkit_header.dart)| [dragableScrollSheet+LoadMore](example/lib/ui/example/otherwidget/draggable_bottomsheet_loadmore.dart)|[Gif Indicator](example/lib/ui/example/customindicator/gif_indicator_example1.dart) |
-|:---:|:---:|:---:|:---:|
-|| ![](arts/example7.gif) | ![](arts/example8.gif) | ![](arts/gifindicator.gif) |
+| Style | [simple custom header(使用SpinKit)](example/lib/ui/example/customindicator/spinkit_header.dart) | [dragableScrollSheet+LoadMore](example/lib/ui/example/otherwidget/draggable_bottomsheet_loadmore.dart) | [Gif Indicator](example/lib/ui/example/customindicator/gif_indicator_example1.dart) |
+| :---: | :---------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
+|       |                                     ![](arts/example7.gif)                                      |                                         ![](arts/example8.gif)                                         |                             ![](arts/gifindicator.gif)                              |
 
 
 
@@ -201,18 +208,18 @@ attributes that are not empty.
 
 ### 各种指示器
 
-| refresh style |   |pull up load style| |
-|:---:|:---:|:---:|:---:|
-| RefreshStyle.Follow <br>![Follow](example/images/refreshstyle1.gif)|RefreshStyle.UnFollow <br> ![不跟随](example/images/refreshstyle2.gif)| LoadStyle.ShowAlways <br>  ![永远显示](example/images/loadstyle1.gif) | LoadStyle.HideAlways<br> ![永远隐藏](example/images/loadstyle2.gif)|
-| RefreshStyle.Behind <br> ![背部](example/images/refreshstyle3.gif)| RefreshStyle.Front <br> ![前面悬浮](example/images/refreshstyle4.gif)| LoadStyle.ShowWhenLoading<br>  ![当加载中才显示,其它隐藏](example/images/loadstyle3.gif) | |
+|                            refresh style                            |                                                                        |                                    pull up load style                                    |                                                                     |
+| :-----------------------------------------------------------------: | :--------------------------------------------------------------------: | :--------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
+| RefreshStyle.Follow <br>![Follow](example/images/refreshstyle1.gif) | RefreshStyle.UnFollow <br> ![不跟随](example/images/refreshstyle2.gif) |          LoadStyle.ShowAlways <br>  ![永远显示](example/images/loadstyle1.gif)           | LoadStyle.HideAlways<br> ![永远隐藏](example/images/loadstyle2.gif) |
+| RefreshStyle.Behind <br> ![背部](example/images/refreshstyle3.gif)  | RefreshStyle.Front <br> ![前面悬浮](example/images/refreshstyle4.gif)  | LoadStyle.ShowWhenLoading<br>  ![当加载中才显示,其它隐藏](example/images/loadstyle3.gif) |                                                                     |
 
-|Style| [ClassicIndicator](https://github.com/peng8350/flutter_pulltorefresh/blob/master/lib/src/indicator/classic_indicator.dart) | [WaterDropHeader](https://github.com/peng8350/flutter_pulltorefresh/blob/master/lib/src/indicator/waterdrop_header.dart) | [MaterialClassicHeader](https://github.com/peng8350/flutter_pulltorefresh/blob/master/lib/src/indicator/material_indicator.dart) |
-|:---:|:---:|:---:|:---:|
-|| ![](example/images/classical_follow.gif) | ![](example/images/warterdrop.gif) | ![](example/images/material_classic.gif) |
+| Style | [ClassicIndicator](https://github.com/peng8350/flutter_pulltorefresh/blob/master/lib/src/indicator/classic_indicator.dart) | [WaterDropHeader](https://github.com/peng8350/flutter_pulltorefresh/blob/master/lib/src/indicator/waterdrop_header.dart) | [MaterialClassicHeader](https://github.com/peng8350/flutter_pulltorefresh/blob/master/lib/src/indicator/material_indicator.dart) |
+| :---: | :------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------: |
+|       |                                          ![](example/images/classical_follow.gif)                                          |                                            ![](example/images/warterdrop.gif)                                            |                                             ![](example/images/material_classic.gif)                                             |
 
-|Style|  [WaterDropMaterialHeader](https://github.com/peng8350/flutter_pulltorefresh/blob/master/lib/src/indicator/material_indicator.dart) | [Shimmer Indicator](example/lib/ui/example/customindicator/shimmer_indicator.dart) |[Bezier+Circle](https://github.com/peng8350/flutter_pulltorefresh/blob/master/lib/src/indicator/bezier_indicator.dart) |
-|:---:|:---:|:---:|:---:|
-||  ![](example/images/material_waterdrop.gif) |![](example/images/shimmerindicator.gif) | ![](example/images/bezier.gif) |
+| Style | [WaterDropMaterialHeader](https://github.com/peng8350/flutter_pulltorefresh/blob/master/lib/src/indicator/material_indicator.dart) | [Shimmer Indicator](example/lib/ui/example/customindicator/shimmer_indicator.dart) | [Bezier+Circle](https://github.com/peng8350/flutter_pulltorefresh/blob/master/lib/src/indicator/bezier_indicator.dart) |
+| :---: | :--------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------: |
+|       |                                             ![](example/images/material_waterdrop.gif)                                             |                      ![](example/images/shimmerindicator.gif)                      |                                             ![](example/images/bezier.gif)                                             |
 
 
 <a name="child"></a>

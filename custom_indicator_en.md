@@ -60,7 +60,6 @@ class RunningHeader extends RefreshIndicator {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return RunningHeaderState();
   }
 }
@@ -109,13 +108,11 @@ Then when this method is finished, floating = false, the header starts to hide.
 
     @override
     Future<void> endRefresh() {
-      // TODO: implement endRefresh
       return _offsetController.animateTo(1.0).whenComplete(() {});
     }
 
 
   Widget buildContent(BuildContext context, RefreshStatus mode) {
-    // TODO: implement buildContent
     return SlideTransition(
       child: ScaleTransition(
         child: (mode != RefreshStatus.idle || mode != RefreshStatus.canRefresh)
@@ -136,14 +133,13 @@ So what should we do here? There is no specific method inside, but you can resto
 
   @override
   void resetValue() {
-    // TODO: implement handleModeChange
       _scaleAnimation.value = 0.0;
       _offsetController.value = 0.0;
   }
 
 ```
 
-This header is not included in packages, because most people don't use it, just as an example.。[Code](example/lib/other/RunningHeader.dart)
+This header is not included in packages, because most people don't use it, just as an example.。[Code](example/lib/other/running_header.dart)
 
 
  the most important api in RefreshIndicatorState

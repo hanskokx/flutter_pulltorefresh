@@ -64,7 +64,6 @@ class RunningHeader extends RefreshIndicator {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return RunningHeaderState();
   }
 }
@@ -113,13 +112,11 @@ class RunningHeaderState extends RefreshIndicatorState<RunningHeader>
 
     @override
     Future<void> endRefresh() {
-      // TODO: implement endRefresh
       return _offsetController.animateTo(1.0).whenComplete(() {});
     }
 
 
   Widget buildContent(BuildContext context, RefreshStatus mode) {
-    // TODO: implement buildContent
     return SlideTransition(
       child: ScaleTransition(
         child: (mode != RefreshStatus.idle || mode != RefreshStatus.canRefresh)
@@ -140,14 +137,13 @@ class RunningHeaderState extends RefreshIndicatorState<RunningHeader>
 
   @override
   void resetValue() {
-    // TODO: implement handleModeChange
       _scaleAnimation.value = 0.0;
       _offsetController.value = 0.0;
   }
 
 ```
 
-这个header就不放到packages中了,因为大多人用不上,只是作为一个例子。[代码](example/lib/other/RunningHeader.dart)
+这个header就不放到packages中了,因为大多人用不上,只是作为一个例子。[代码](example/lib/other/running_header.dart)
 
 RefreshIndicatorState里一些非常重要的可重写方法和属性
 

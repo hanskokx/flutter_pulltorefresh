@@ -4,158 +4,158 @@
  * Time:  2019-07-26 18:22
  */
 
-import 'package:flutter/widgets.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:flutter_gifimage/flutter_gifimage.dart';
-import 'package:flutter/material.dart'
+import "package:flutter/material.dart"
     hide RefreshIndicator, RefreshIndicatorState;
+import "package:pull_to_refresh/pull_to_refresh.dart";
 
 /*
-  I use my plugin to implements gif effect,this plugin can help you to controll gif easily,
-  see page to find about usage: (https://github.com/peng8350/flutter_gifimage)
+  Use an animated GIF asset with a Flutter animation controller for simple
+  visual effects without a dedicated gif controller package.
 */
 class GifHeader1 extends RefreshIndicator {
-  GifHeader1() : super(height: 80.0, refreshStyle: RefreshStyle.Follow);
+  const GifHeader1({super.key})
+    : super(height: 80.0, refreshStyle: RefreshStyle.follow);
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return GifHeader1State();
   }
 }
 
 class GifHeader1State extends RefreshIndicatorState<GifHeader1>
     with SingleTickerProviderStateMixin {
-  GifController _gifController;
+  late AnimationController _gifController;
+  late Animation<double> _opacity;
 
   @override
   void initState() {
-    // TODO: implement initState
-    // init frame is 2
-    _gifController = GifController(
+    _gifController = AnimationController(
       vsync: this,
-      value: 1,
+      duration: const Duration(milliseconds: 500),
+      value: 0.2,
     );
+    _opacity = CurvedAnimation(parent: _gifController, curve: Curves.linear);
     super.initState();
   }
 
   @override
-  void onModeChange(RefreshStatus mode) {
-    // TODO: implement onModeChange
+  void onModeChange(RefreshStatus? mode) {
     if (mode == RefreshStatus.refreshing) {
-      _gifController.repeat(
-          min: 0, max: 29, period: Duration(milliseconds: 500));
+      _gifController.repeat(reverse: true);
     }
     super.onModeChange(mode);
   }
 
   @override
   Future<void> endRefresh() {
-    // TODO: implement endRefresh
-    _gifController.value = 30;
-    return _gifController.animateTo(59, duration: Duration(milliseconds: 500));
+    _gifController.value = 1.0;
+    return _gifController.animateTo(
+      0.2,
+      duration: const Duration(milliseconds: 500),
+    );
   }
 
   @override
   void resetValue() {
-    // TODO: implement resetValue
-    // reset not ok , the plugin need to update lowwer
-    _gifController.value = 0;
+    _gifController.value = 0.2;
     super.resetValue();
   }
 
   @override
   Widget buildContent(BuildContext context, RefreshStatus mode) {
-    // TODO: implement buildContent
-    return GifImage(
-      image: AssetImage("images/gifindicator1.gif"),
-      controller: _gifController,
-      height: 80.0,
-      width: 537.0,
+    return FadeTransition(
+      opacity: _opacity,
+      child: Image.asset(
+        "images/gifindicator1.gif",
+        height: 80.0,
+        width: 537.0,
+        fit: BoxFit.cover,
+      ),
     );
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _gifController.dispose();
     super.dispose();
   }
 }
 
 class GifFooter1 extends StatefulWidget {
-  GifFooter1() : super();
+  const GifFooter1({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _GifFooter1State();
   }
 }
 
 class _GifFooter1State extends State<GifFooter1>
     with SingleTickerProviderStateMixin {
-  GifController _gifController;
+  late AnimationController _gifController;
+  late Animation<double> _opacity;
 
   @override
   void initState() {
-    // TODO: implement initState
-    // init frame is 2
-    _gifController = GifController(
+    _gifController = AnimationController(
       vsync: this,
-      value: 1,
+      duration: const Duration(milliseconds: 500),
+      value: 0.2,
     );
+    _opacity = CurvedAnimation(parent: _gifController, curve: Curves.linear);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return CustomFooter(
       height: 80,
       builder: (context, mode) {
-        return GifImage(
-          image: AssetImage("images/gifindicator1.gif"),
-          controller: _gifController,
-          height: 80.0,
-          width: 537.0,
+        return FadeTransition(
+          opacity: _opacity,
+          child: Image.asset(
+            "images/gifindicator1.gif",
+            height: 80.0,
+            width: 537.0,
+            fit: BoxFit.cover,
+          ),
         );
       },
-      loadStyle: LoadStyle.ShowWhenLoading,
+      loadStyle: LoadStyle.showWhenLoading,
       onModeChange: (mode) {
         if (mode == LoadStatus.loading) {
-          _gifController.repeat(
-              min: 0, max: 29, period: Duration(milliseconds: 500));
+          _gifController.repeat(reverse: true);
         }
       },
       endLoading: () async {
-        _gifController.value = 30;
-        return _gifController.animateTo(59,
-            duration: Duration(milliseconds: 500));
+        _gifController.value = 1.0;
+        return _gifController.animateTo(
+          0.2,
+          duration: const Duration(milliseconds: 500),
+        );
       },
     );
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _gifController.dispose();
     super.dispose();
   }
 }
 
 class GifIndicatorExample1 extends StatefulWidget {
+  const GifIndicatorExample1({super.key});
+
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return GifIndicatorExample1State();
   }
 }
 
 class GifIndicatorExample1State extends State<GifIndicatorExample1> {
-  RefreshController _controller = RefreshController();
+  final RefreshController _controller = RefreshController();
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return RefreshConfiguration.copyAncestor(
       context: context,
       // two attrs enable footer implements the effect in header default
@@ -164,18 +164,18 @@ class GifIndicatorExample1State extends State<GifIndicatorExample1> {
       child: SmartRefresher(
         controller: _controller,
         enablePullUp: true,
-        header: GifHeader1(),
-        footer: GifFooter1(),
+        header: const GifHeader1(),
+        footer: const GifFooter1(),
         onRefresh: () async {
-          await Future.delayed(Duration(milliseconds: 2000));
+          await Future.delayed(const Duration(milliseconds: 2000));
           _controller.refreshCompleted();
         },
         onLoading: () async {
-          await Future.delayed(Duration(milliseconds: 2000));
+          await Future.delayed(const Duration(milliseconds: 2000));
           _controller.loadFailed();
         },
         child: ListView.builder(
-          itemBuilder: (c, q) => Card(),
+          itemBuilder: (c, q) => const Card(),
           itemCount: 50,
           itemExtent: 100.0,
         ),
