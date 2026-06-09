@@ -643,6 +643,12 @@ class RefreshController {
     position?.isScrollingNotifier.removeListener(_listenScrollEnd);
   }
 
+  bool _isAttachedTo(ScrollPosition currentPosition) {
+    return identical(position, currentPosition) &&
+        _refresherState != null &&
+        _refresherState!.mounted;
+  }
+
   StatefulElement? _findIndicator(BuildContext context, Type elementType) {
     StatefulElement? result;
     context.visitChildElements((Element e) {
@@ -696,6 +702,9 @@ class RefreshController {
       _refresherState!.setCanDrag(false);
     if (needMove) {
       return Future.delayed(const Duration(milliseconds: 50)).then((_) async {
+        if (!_isAttachedTo(currentPosition)) {
+          return;
+        }
         // - 0.0001 is for NestedScrollView.
         await currentPosition
             .animateTo(
@@ -704,23 +713,24 @@ class RefreshController {
               curve: curve,
             )
             .then((_) {
-              if (_refresherState != null && _refresherState!.mounted) {
+              if (_isAttachedTo(currentPosition)) {
                 _refresherState!.setCanDrag(true);
                 if (needCallback) {
-                  headerMode!.value = RefreshStatus.refreshing;
+                  headerMode?.value = RefreshStatus.refreshing;
                 } else {
-                  headerMode!.setValueWithNoNotify(RefreshStatus.refreshing);
-                  if (indicatorElement.state.mounted)
+                  headerMode?.setValueWithNoNotify(RefreshStatus.refreshing);
+                  if (indicatorElement.state.mounted) {
                     (indicatorElement.state as RefreshIndicatorState).setState(
                       () {},
                     );
+                  }
                 }
               }
             });
       });
     } else {
       Future.value().then((_) {
-        headerMode!.value = RefreshStatus.refreshing;
+        headerMode?.value = RefreshStatus.refreshing;
       });
     }
     return null;
@@ -739,6 +749,9 @@ class RefreshController {
     }
     headerMode!.value = RefreshStatus.twoLevelOpening;
     return Future.delayed(const Duration(milliseconds: 50)).then((_) async {
+      if (!_isAttachedTo(currentPosition)) {
+        return;
+      }
       await currentPosition.animateTo(
         currentPosition.minScrollExtent,
         duration: duration,
@@ -772,6 +785,9 @@ class RefreshController {
       _refresherState!.setCanDrag(false);
     if (needMove) {
       return Future.delayed(const Duration(milliseconds: 50)).then((_) async {
+        if (!_isAttachedTo(currentPosition)) {
+          return;
+        }
         await currentPosition
             .animateTo(
               currentPosition.maxScrollExtent,
@@ -779,23 +795,24 @@ class RefreshController {
               curve: curve,
             )
             .then((_) {
-              if (_refresherState != null && _refresherState!.mounted) {
+              if (_isAttachedTo(currentPosition)) {
                 _refresherState!.setCanDrag(true);
                 if (needCallback) {
-                  footerMode!.value = LoadStatus.loading;
+                  footerMode?.value = LoadStatus.loading;
                 } else {
-                  footerMode!.setValueWithNoNotify(LoadStatus.loading);
-                  if (indicatorElement.state.mounted)
+                  footerMode?.setValueWithNoNotify(LoadStatus.loading);
+                  if (indicatorElement.state.mounted) {
                     (indicatorElement.state as LoadIndicatorState).setState(
                       () {},
                     );
+                  }
                 }
               }
             });
       });
     } else {
       return Future.value().then((_) {
-        footerMode!.value = LoadStatus.loading;
+        footerMode?.value = LoadStatus.loading;
       });
     }
   }
