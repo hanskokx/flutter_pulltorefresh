@@ -643,12 +643,6 @@ class RefreshController {
     position?.isScrollingNotifier.removeListener(_listenScrollEnd);
   }
 
-  bool _isAttachedTo(ScrollPosition currentPosition) {
-    return identical(position, currentPosition) &&
-        _refresherState != null &&
-        _refresherState!.mounted;
-  }
-
   StatefulElement? _findIndicator(BuildContext context, Type elementType) {
     StatefulElement? result;
     context.visitChildElements((Element e) {
@@ -702,22 +696,25 @@ class RefreshController {
       _refresherState!.setCanDrag(false);
     if (needMove) {
       return Future.delayed(const Duration(milliseconds: 50)).then((_) async {
-        if (!_isAttachedTo(currentPosition)) {
-          if (_refresherState != null && _refresherState!.mounted) {
-            _refresherState!.setCanDrag(true);
+        final SmartRefresherState? state = _refresherState;
+        final ScrollPosition? activePosition = position;
+        if (state == null || !state.mounted || activePosition == null) {
+          if (state != null && state.mounted) {
+            state.setCanDrag(true);
           }
           return;
         }
         // - 0.0001 is for NestedScrollView.
-        await currentPosition
+        await activePosition
             .animateTo(
-              currentPosition.minScrollExtent - 0.0001,
+              activePosition.minScrollExtent - 0.0001,
               duration: duration,
               curve: curve,
             )
             .then((_) {
-              if (_isAttachedTo(currentPosition)) {
-                _refresherState!.setCanDrag(true);
+              final SmartRefresherState? state = _refresherState;
+              if (state != null && state.mounted) {
+                state.setCanDrag(true);
                 if (needCallback) {
                   headerMode?.value = RefreshStatus.refreshing;
                 } else {
@@ -752,11 +749,13 @@ class RefreshController {
     }
     headerMode!.value = RefreshStatus.twoLevelOpening;
     return Future.delayed(const Duration(milliseconds: 50)).then((_) async {
-      if (!_isAttachedTo(currentPosition)) {
+      final SmartRefresherState? state = _refresherState;
+      final ScrollPosition? activePosition = position;
+      if (state == null || !state.mounted || activePosition == null) {
         return;
       }
-      await currentPosition.animateTo(
-        currentPosition.minScrollExtent,
+      await activePosition.animateTo(
+        activePosition.minScrollExtent,
         duration: duration,
         curve: curve,
       );
@@ -788,21 +787,24 @@ class RefreshController {
       _refresherState!.setCanDrag(false);
     if (needMove) {
       return Future.delayed(const Duration(milliseconds: 50)).then((_) async {
-        if (!_isAttachedTo(currentPosition)) {
-          if (_refresherState != null && _refresherState!.mounted) {
-            _refresherState!.setCanDrag(true);
+        final SmartRefresherState? state = _refresherState;
+        final ScrollPosition? activePosition = position;
+        if (state == null || !state.mounted || activePosition == null) {
+          if (state != null && state.mounted) {
+            state.setCanDrag(true);
           }
           return;
         }
-        await currentPosition
+        await activePosition
             .animateTo(
-              currentPosition.maxScrollExtent,
+              activePosition.maxScrollExtent,
               duration: duration,
               curve: curve,
             )
             .then((_) {
-              if (_isAttachedTo(currentPosition)) {
-                _refresherState!.setCanDrag(true);
+              final SmartRefresherState? state = _refresherState;
+              if (state != null && state.mounted) {
+                state.setCanDrag(true);
                 if (needCallback) {
                   footerMode?.value = LoadStatus.loading;
                 } else {

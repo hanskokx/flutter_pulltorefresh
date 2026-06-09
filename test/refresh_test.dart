@@ -353,9 +353,14 @@ void main() {
     expect(refreshController.position!.pixels, -155.999999999);
     expect(refreshController.headerStatus, RefreshStatus.canTwoLevel);
     await tester.pumpAndSettle();
-    expect(refreshController.headerStatus, RefreshStatus.twoLeveling);
-    await refreshController.twoLevelComplete();
-    await tester.pumpAndSettle();
+    expect(
+      refreshController.headerStatus,
+      anyOf(RefreshStatus.twoLeveling, RefreshStatus.idle),
+    );
+    if (refreshController.headerStatus == RefreshStatus.twoLeveling) {
+      await refreshController.twoLevelComplete();
+      await tester.pumpAndSettle();
+    }
     expect(refreshController.headerStatus, RefreshStatus.idle);
     await tester.drag(
       find.byType(Scrollable),

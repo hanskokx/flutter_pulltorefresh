@@ -75,23 +75,14 @@ class RenderSliverRefresh extends RenderSliverSingleBoxAdapter {
     required double refreshIndicatorExtent,
     required bool hasLayoutExtent,
     RenderBox? child,
-    double? paintOffsetY,
-    RefreshStyle? refreshStyle,
+    this.paintOffsetY,
+    this.refreshStyle,
   }) : assert(refreshIndicatorExtent >= 0.0),
        _refreshIndicatorExtent = refreshIndicatorExtent,
        _hasLayoutExtent = hasLayoutExtent,
-       _paintOffsetY = paintOffsetY,
-       _refreshStyle = refreshStyle,
        super(child: child);
 
-  RefreshStyle? get refreshStyle => _refreshStyle;
-  RefreshStyle? _refreshStyle;
-
-  set refreshStyle(RefreshStyle? value) {
-    if (value == _refreshStyle) return;
-    _refreshStyle = value;
-    markNeedsLayout();
-  }
+  RefreshStyle? refreshStyle;
 
   late BuildContext context;
 
@@ -99,14 +90,7 @@ class RenderSliverRefresh extends RenderSliverSingleBoxAdapter {
   // resting state when in the refreshing mode.
   double get refreshIndicatorLayoutExtent => _refreshIndicatorExtent;
   double _refreshIndicatorExtent;
-  double? get paintOffsetY => _paintOffsetY;
-  double? _paintOffsetY;
-
-  set paintOffsetY(double? value) {
-    if (value == _paintOffsetY) return;
-    _paintOffsetY = value;
-    markNeedsPaint();
-  }
+  double? paintOffsetY;
 
   // need to trigger shouldAceppty user offset ,else it will not limit scroll when enter twolevel or exit
   // also it will crash if you call applyNewDimession when the state change
@@ -168,7 +152,6 @@ class RenderSliverRefresh extends RenderSliverSingleBoxAdapter {
   }
 
   set updateFlag(bool u) {
-    if (_updateFlag == u) return;
     _updateFlag = u;
     markNeedsLayout();
   }
