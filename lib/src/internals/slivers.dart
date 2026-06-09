@@ -367,22 +367,48 @@ class SliverLoading extends SingleChildRenderObjectWidget {
 
 class RenderSliverLoading extends RenderSliverSingleBoxAdapter {
   RenderSliverLoading({
+    required double layoutExtent,
+    required bool hasLayoutExtent,
+    required bool shouldFollowContent,
+    required bool hideWhenNotFull,
     RenderBox? child,
-    this.mode,
-    double layoutExtent = 0.0,
-    bool hasLayoutExtent = false,
-    this.shouldFollowContent = false,
-    this.hideWhenNotFull = false,
-  }) : _layoutExtent = layoutExtent,
+    LoadStatus? mode,
+  }) : assert(layoutExtent >= 0.0),
+       _mode = mode,
+       _layoutExtent = layoutExtent,
        _hasLayoutExtent = hasLayoutExtent,
+       _shouldFollowContent = shouldFollowContent,
+       _hideWhenNotFull = hideWhenNotFull,
        super(child: child);
 
-  bool shouldFollowContent;
-  bool hideWhenNotFull;
+  bool get shouldFollowContent => _shouldFollowContent;
+  bool _shouldFollowContent;
 
-  LoadStatus? mode;
+  set shouldFollowContent(bool value) {
+    if (value == _shouldFollowContent) return;
+    _shouldFollowContent = value;
+    markNeedsLayout();
+  }
 
-  double _layoutExtent = 0.0;
+  bool get hideWhenNotFull => _hideWhenNotFull;
+  bool _hideWhenNotFull;
+
+  set hideWhenNotFull(bool value) {
+    if (value == _hideWhenNotFull) return;
+    _hideWhenNotFull = value;
+    markNeedsLayout();
+  }
+
+  LoadStatus? get mode => _mode;
+  LoadStatus? _mode;
+
+  set mode(LoadStatus? value) {
+    if (value == _mode) return;
+    _mode = value;
+    markNeedsLayout();
+  }
+
+  double _layoutExtent;
 
   set layoutExtent(double extent) {
     if (extent == _layoutExtent) return;
@@ -393,7 +419,7 @@ class RenderSliverLoading extends RenderSliverSingleBoxAdapter {
   double get layoutExtent => _layoutExtent;
 
   bool get hasLayoutExtent => _hasLayoutExtent;
-  bool _hasLayoutExtent = false;
+  bool _hasLayoutExtent;
 
   set hasLayoutExtent(bool value) {
     if (value == _hasLayoutExtent) return;

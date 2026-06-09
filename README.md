@@ -1,4 +1,5 @@
 # flutter_pulltorefresh
+
 <a href="https://pub.dev/packages/pull_to_refresh">
   <img src="https://img.shields.io/pub/v/pull_to_refresh.svg"/>
 </a>
@@ -10,20 +11,17 @@
 </a>
 
 ## Intro
+
 a widget provided to the flutter scroll component drop-down refresh and pull up load.support android and ios.
 If you are Chinese,click here([中文文档](https://github.com/peng8350/flutter_pulltorefresh/blob/master/README_CN.md))
 
 ## Compatibility
+
 * Dart SDK: >=3.12.1 <4.0.0
 * Flutter: >=3.0.0
 
-## Modernization Status
-* Phase 1 completed: package library and tests have been modernized and validated on current Flutter/Dart tooling.
-* Example app modernization is intentionally deferred to Phase 2.
-
-
-
 ## Features
+
 * pull up load and pull down refresh
 * It's almost fit for all Scroll witgets,like GridView,ListView...
 * provide global setting of default indicator and property
@@ -183,12 +181,10 @@ attributes that are not empty.
 
 ```
 
-
 ## ScreenShots
 
-
-
 ### Examples
+
 | Style | [basic](example/lib/ui/example/useStage/basic.dart) | [header in other place](example/lib/ui/example/customindicator/link_header_example.dart) | [reverse + horizontal](example/lib/ui/example/useStage/horizontal+reverse.dart) |
 | :---: | :-------------------------------------------------: | :--------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
 |       |               ![](arts/example1.gif)                |                                  ![](arts/example2.gif)                                  |                             ![](arts/example3.gif)                              |
@@ -197,12 +193,9 @@ attributes that are not empty.
 | :---: | :---------------------------------------------------------------: | :----------------------------------------------------------: | :-------------------------------------------------------: |
 |       |                      ![](arts/example4.gif)                       |                    ![](arts/example5.gif)                    |                  ![](arts/example6.gif)                   |
 
-
 | Style | [simple custom header(使用SpinKit)](example/lib/ui/example/customindicator/spinkit_header.dart) | [dragableScrollSheet+LoadMore](example/lib/ui/example/otherwidget/draggable_bottomsheet_loadmore.dart) | [Gif Indicator](example/lib/ui/example/customindicator/gif_indicator_example1.dart) |
 | :---: | :---------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
 |       |                                     ![](arts/example7.gif)                                      |                                         ![](arts/example8.gif)                                         |                             ![](arts/gifindicator.gif)                              |
-
-
 
 ### Indicator
 
@@ -220,7 +213,6 @@ attributes that are not empty.
 | Style | [WaterDropMaterialHeader](https://github.com/peng8350/flutter_pulltorefresh/blob/master/lib/src/indicator/material_indicator.dart) | [Shimmer Indicator](example/lib/ui/example/customindicator/shimmer_indicator.dart) | [Bezier+Circle](https://github.com/peng8350/flutter_pulltorefresh/blob/master/lib/src/indicator/bezier_indicator.dart) |
 | :---: | :--------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------: |
 |       |                                             ![](example/images/material_waterdrop.gif)                                             |                      ![](example/images/shimmerindicator.gif)                      |                                             ![](example/images/bezier.gif)                                             |
-
 
 <a name="child"></a>
 
@@ -281,17 +273,18 @@ Demonstrate another wrong doing,put ScrollView in another widget
 The above mistake led to scrollable nesting another scrollable, causing you to not see the header and footer no matter how slippery you are.
 Similarly, you may need to work with components like NotificationListener, ScrollConfiguration..., remember, don't store them outside ScrollView (you want to add refresh parts) and Smart Refresher memory.。
 
-
 ## More
-- [Property Document](propertys_en.md) or [Api/Doc](https://pub.dev/documentation/pull_to_refresh/latest/pulltorefresh/SmartRefresher-class.html)
-- [Custom Indicator](custom_indicator_en.md)
-- [Inner Attribute Of Indicators](indicator_attribute_en.md)
-- [Update Log](CHANGELOG.md)
-- [Notice](notice_en.md)
-- [FAQ](problems_en.md)
 
+* [Property Document](propertys_en.md) or [Api/Doc](https://pub.dev/documentation/pull_to_refresh/latest/pulltorefresh/SmartRefresher-class.html)
+
+* [Custom Indicator](custom_indicator_en.md)
+* [Inner Attribute Of Indicators](indicator_attribute_en.md)
+* [Update Log](CHANGELOG.md)
+* [Notice](notice_en.md)
+* [FAQ](problems_en.md)
 
 ## Exist Problems
+
 * about NestedScrollView,When you slide down and then slide up quickly, it will return back. The main reason is that
  NestedScrollView does not consider the problem of cross-border elasticity under
  bouncingScrollPhysics. Relevant flutter issues: 34316, 33367, 29264. This problem
@@ -309,7 +302,6 @@ Add SmartRefresher, see my two examples [Example 1](example/lib/other/refresh_an
 [SmartRefreshLayout](https://github.com/scwang90/SmartRefreshLayout)
 
 ## LICENSE
-
 
 ```
 
