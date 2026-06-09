@@ -199,7 +199,7 @@ class RefreshPhysics extends ScrollPhysics {
       }
     }
     double topExtra = 0.0;
-    double? bottomExtra = 0.0;
+    double bottomExtra = 0.0;
     if (enablePullDown) {
       final RenderSliverRefresh sliverHeader =
           viewportRender!.firstChild as RenderSliverRefresh;
@@ -228,7 +228,7 @@ class RefreshPhysics extends ScrollPhysics {
     final double topBoundary =
         position.minScrollExtent - maxOverScrollExtent! - topExtra;
     final double bottomBoundary =
-        position.maxScrollExtent + maxUnderScrollExtent! + bottomExtra!;
+        position.maxScrollExtent + maxUnderScrollExtent! + bottomExtra;
 
     if (scrollPosition.activity is BallisticScrollActivity) {
       if (topHitBoundary != double.infinity) {

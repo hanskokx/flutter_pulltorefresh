@@ -447,33 +447,33 @@ class _BezierCircleHeaderState extends State<BezierCircleHeader>
 }
 
 class _RaidalPainter extends CustomPainter {
-  final double? value;
+  final double value;
 
-  final Color? circleColor;
+  final Color circleColor;
 
-  final double? circleRadius;
+  final double circleRadius;
 
-  final bool? refreshing;
+  final bool refreshing;
 
   _RaidalPainter({
-    this.value,
-    this.circleColor,
-    this.circleRadius,
-    this.refreshing,
+    required this.value,
+    required this.circleColor,
+    required this.circleRadius,
+    required this.refreshing,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint();
-    paint.color = circleColor!;
+    paint.color = circleColor;
     paint.strokeWidth = 2;
     paint.strokeCap = StrokeCap.round;
     paint.style = PaintingStyle.stroke;
-    if (refreshing!) {
+    if (refreshing) {
       canvas.drawArc(
         Rect.fromCircle(
           center: Offset(size.width / 2, size.height / 2),
-          radius: circleRadius! + 3,
+          radius: circleRadius + 3,
         ),
         -math.pi / 2,
         math.pi * 4,
@@ -485,7 +485,7 @@ class _RaidalPainter extends CustomPainter {
     canvas.drawArc(
       Rect.fromCircle(
         center: Offset(size.width / 2, size.height / 2),
-        radius: circleRadius!,
+        radius: circleRadius,
       ),
       -math.pi / 2,
       math.pi * 4,
@@ -496,22 +496,22 @@ class _RaidalPainter extends CustomPainter {
     canvas.drawArc(
       Rect.fromCircle(
         center: Offset(size.width / 2, size.height / 2),
-        radius: circleRadius!,
+        radius: circleRadius,
       ),
       -math.pi / 2,
-      math.pi * 4 * value!,
+      math.pi * 4 * value,
       true,
       paint,
     );
     paint.style = PaintingStyle.stroke;
-    if (refreshing!) {
+    if (refreshing) {
       canvas.drawArc(
         Rect.fromCircle(
           center: Offset(size.width / 2, size.height / 2),
-          radius: circleRadius! + 3,
+          radius: circleRadius + 3,
         ),
         -math.pi / 2,
-        math.pi * 4 * value!,
+        math.pi * 4 * value,
         false,
         paint,
       );

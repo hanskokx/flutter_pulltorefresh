@@ -317,23 +317,23 @@ class RenderSliverRefresh extends RenderSliverSingleBoxAdapter {
 /// Render footer sliver widget
 class SliverLoading extends SingleChildRenderObjectWidget {
   /// when not full one page,whether it should be hide and disable loading
-  final bool? hideWhenNotFull;
-  final bool? floating;
+  final bool hideWhenNotFull;
+  final bool floating;
 
   /// load state
   final LoadStatus? mode;
-  final double? layoutExtent;
+  final double layoutExtent;
 
   /// when not full one page,whether it should follow content
-  final bool? shouldFollowContent;
+  final bool shouldFollowContent;
 
   const SliverLoading({
     super.key,
     this.mode,
-    this.floating,
-    this.shouldFollowContent,
-    this.layoutExtent,
-    this.hideWhenNotFull,
+    this.floating = false,
+    this.shouldFollowContent = false,
+    this.layoutExtent = 0.0,
+    this.hideWhenNotFull = false,
     super.child,
   });
 
@@ -355,7 +355,7 @@ class SliverLoading extends SingleChildRenderObjectWidget {
   ) {
     renderObject
       ..mode = mode
-      ..hasLayoutExtent = floating!
+      ..hasLayoutExtent = floating
       ..layoutExtent = layoutExtent
       ..shouldFollowContent = shouldFollowContent
       ..hideWhenNotFull = hideWhenNotFull;
@@ -366,33 +366,33 @@ class RenderSliverLoading extends RenderSliverSingleBoxAdapter {
   RenderSliverLoading({
     RenderBox? child,
     this.mode,
-    double? layoutExtent,
-    bool? hasLayoutExtent,
-    this.shouldFollowContent,
-    this.hideWhenNotFull,
+    double layoutExtent = 0.0,
+    bool hasLayoutExtent = false,
+    this.shouldFollowContent = false,
+    this.hideWhenNotFull = false,
   }) {
     _hasLayoutExtent = hasLayoutExtent;
     this.layoutExtent = layoutExtent;
     this.child = child;
   }
 
-  bool? shouldFollowContent;
-  bool? hideWhenNotFull;
+  bool shouldFollowContent;
+  bool hideWhenNotFull;
 
   LoadStatus? mode;
 
-  double? _layoutExtent;
+  double _layoutExtent = 0.0;
 
-  set layoutExtent(double? extent) {
+  set layoutExtent(double extent) {
     if (extent == _layoutExtent) return;
     _layoutExtent = extent;
     markNeedsLayout();
   }
 
-  double? get layoutExtent => _layoutExtent;
+  double get layoutExtent => _layoutExtent;
 
-  bool get hasLayoutExtent => _hasLayoutExtent!;
-  bool? _hasLayoutExtent;
+  bool get hasLayoutExtent => _hasLayoutExtent;
+  bool _hasLayoutExtent = false;
 
   set hasLayoutExtent(bool value) {
     if (value == _hasLayoutExtent) return;
@@ -417,7 +417,7 @@ class RenderSliverLoading extends RenderSliverSingleBoxAdapter {
   //  many sitiuation: 1. reverse 2. not reverse
   // 3. follow content 4. unfollow content
   //5. not full 6. full
-  double? computePaintOrigin(double? layoutExtent, bool reverse, bool follow) {
+  double computePaintOrigin(double layoutExtent, bool reverse, bool follow) {
     if (follow) {
       if (reverse) {
         return layoutExtent;
@@ -430,7 +430,7 @@ class RenderSliverLoading extends RenderSliverSingleBoxAdapter {
                   constraints.precedingScrollExtent,
               0.0,
             ) +
-            layoutExtent!;
+            layoutExtent;
       } else {
         return Math.max(
           constraints.viewportMainAxisExtent -
@@ -479,7 +479,7 @@ class RenderSliverLoading extends RenderSliverSingleBoxAdapter {
       return;
     }
     bool active;
-    if (hideWhenNotFull! && mode != LoadStatus.noMore) {
+    if (hideWhenNotFull && mode != LoadStatus.noMore) {
       active = _computeIfFull(constraints);
     } else {
       active = true;
@@ -510,19 +510,19 @@ class RenderSliverLoading extends RenderSliverSingleBoxAdapter {
     if (active) {
       // consider reverse loading and HideAlways==loadStyle
       geometry = SliverGeometry(
-        scrollExtent: !_hasLayoutExtent! || !_computeIfFull(constraints)
+        scrollExtent: !_hasLayoutExtent || !_computeIfFull(constraints)
             ? 0.0
-            : (layoutExtent ?? 0.0),
+            : layoutExtent,
         paintExtent: paintedChildSize,
         // this need to fix later
         paintOrigin: computePaintOrigin(
-          !_hasLayoutExtent! || !_computeIfFull(constraints)
+          !_hasLayoutExtent || !_computeIfFull(constraints)
               ? layoutExtent
               : 0.0,
           constraints.axisDirection == AxisDirection.up ||
               constraints.axisDirection == AxisDirection.left,
-          _computeIfFull(constraints) || shouldFollowContent!,
-        )!,
+          _computeIfFull(constraints) || shouldFollowContent,
+        ),
         cacheExtent: cacheExtent,
         maxPaintExtent: childExtent,
         hitTestExtent: paintedChildSize,

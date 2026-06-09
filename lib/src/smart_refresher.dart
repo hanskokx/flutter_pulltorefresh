@@ -255,11 +255,17 @@ class SmartRefresher extends StatefulWidget {
        primary = null;
 
   static SmartRefresher? of(BuildContext? context) {
-    return context!.findAncestorWidgetOfExactType<SmartRefresher>();
+    if (context == null) {
+      return null;
+    }
+    return context.findAncestorWidgetOfExactType<SmartRefresher>();
   }
 
   static SmartRefresherState? ofState(BuildContext? context) {
-    return context!.findAncestorStateOfType<SmartRefresherState>();
+    if (context == null) {
+      return null;
+    }
+    return context.findAncestorStateOfType<SmartRefresherState>();
   }
 
   @override
@@ -671,13 +677,15 @@ class RefreshController {
     Duration duration = const Duration(milliseconds: 500),
     Curve curve = Curves.linear,
   }) {
-    assert(
-      position != null,
-      "Try not to call requestRefresh() before build,please call after the ui was rendered",
-    );
+    final ScrollPosition? currentPosition = position;
+    if (currentPosition == null) {
+      throw StateError(
+        "Try not to call requestRefresh() before build,please call after the ui was rendered",
+      );
+    }
     if (isRefresh) return Future.value();
     final StatefulElement? indicatorElement = _findIndicator(
-      position!.context.storageContext,
+      currentPosition.context.storageContext,
       RefreshIndicator,
     );
 
@@ -689,9 +697,9 @@ class RefreshController {
     if (needMove) {
       return Future.delayed(const Duration(milliseconds: 50)).then((_) async {
         // - 0.0001 is for NestedScrollView.
-        await position
-            ?.animateTo(
-              position!.minScrollExtent - 0.0001,
+        await currentPosition
+            .animateTo(
+              currentPosition.minScrollExtent - 0.0001,
               duration: duration,
               curve: curve,
             )
@@ -723,14 +731,16 @@ class RefreshController {
     Duration duration = const Duration(milliseconds: 300),
     Curve curve = Curves.linear,
   }) {
-    assert(
-      position != null,
-      "Try not to call requestRefresh() before build,please call after the ui was rendered",
-    );
+    final ScrollPosition? currentPosition = position;
+    if (currentPosition == null) {
+      throw StateError(
+        "Try not to call requestRefresh() before build,please call after the ui was rendered",
+      );
+    }
     headerMode!.value = RefreshStatus.twoLevelOpening;
     return Future.delayed(const Duration(milliseconds: 50)).then((_) async {
-      await position?.animateTo(
-        position!.minScrollExtent,
+      await currentPosition.animateTo(
+        currentPosition.minScrollExtent,
         duration: duration,
         curve: curve,
       );
@@ -744,13 +754,15 @@ class RefreshController {
     Duration duration = const Duration(milliseconds: 300),
     Curve curve = Curves.linear,
   }) {
-    assert(
-      position != null,
-      "Try not to call requestLoading() before build,please call after the ui was rendered",
-    );
+    final ScrollPosition? currentPosition = position;
+    if (currentPosition == null) {
+      throw StateError(
+        "Try not to call requestLoading() before build,please call after the ui was rendered",
+      );
+    }
     if (isLoading) return Future.value();
     final StatefulElement? indicatorElement = _findIndicator(
-      position!.context.storageContext,
+      currentPosition.context.storageContext,
       LoadIndicator,
     );
 
@@ -760,9 +772,9 @@ class RefreshController {
       _refresherState!.setCanDrag(false);
     if (needMove) {
       return Future.delayed(const Duration(milliseconds: 50)).then((_) async {
-        await position
-            ?.animateTo(
-              position!.maxScrollExtent,
+        await currentPosition
+            .animateTo(
+              currentPosition.maxScrollExtent,
               duration: duration,
               curve: curve,
             )
@@ -1010,75 +1022,75 @@ class RefreshConfiguration extends InheritedWidget {
     bool? enableRefreshVibrate,
     bool? enableLoadMoreVibrate,
     bool? hideFooterWhenNotFull,
-  }) : assert(
-         RefreshConfiguration.of(context) != null,
-         "search RefreshConfiguration anscestor return null,please  Make sure that RefreshConfiguration is the ancestor of that element",
-       ),
-       headerBuilder =
-           headerBuilder ?? RefreshConfiguration.of(context)!.headerBuilder,
-       footerBuilder =
-           footerBuilder ?? RefreshConfiguration.of(context)!.footerBuilder,
+  }) : headerBuilder = headerBuilder ?? _requireAncestor(context).headerBuilder,
+       footerBuilder = footerBuilder ?? _requireAncestor(context).footerBuilder,
        dragSpeedRatio =
-           dragSpeedRatio ?? RefreshConfiguration.of(context)!.dragSpeedRatio,
+           dragSpeedRatio ?? _requireAncestor(context).dragSpeedRatio,
        twiceTriggerDistance =
            twiceTriggerDistance ??
-           RefreshConfiguration.of(context)!.twiceTriggerDistance,
+           _requireAncestor(context).twiceTriggerDistance,
        headerTriggerDistance =
            headerTriggerDistance ??
-           RefreshConfiguration.of(context)!.headerTriggerDistance,
+           _requireAncestor(context).headerTriggerDistance,
        footerTriggerDistance =
            footerTriggerDistance ??
-           RefreshConfiguration.of(context)!.footerTriggerDistance,
+           _requireAncestor(context).footerTriggerDistance,
        springDescription =
-           springDescription ??
-           RefreshConfiguration.of(context)!.springDescription,
+           springDescription ?? _requireAncestor(context).springDescription,
        hideFooterWhenNotFull =
            hideFooterWhenNotFull ??
-           RefreshConfiguration.of(context)!.hideFooterWhenNotFull,
+           _requireAncestor(context).hideFooterWhenNotFull,
        maxOverScrollExtent =
-           maxOverScrollExtent ??
-           RefreshConfiguration.of(context)!.maxOverScrollExtent,
+           maxOverScrollExtent ?? _requireAncestor(context).maxOverScrollExtent,
        maxUnderScrollExtent =
            maxUnderScrollExtent ??
-           RefreshConfiguration.of(context)!.maxUnderScrollExtent,
+           _requireAncestor(context).maxUnderScrollExtent,
        topHitBoundary =
-           topHitBoundary ?? RefreshConfiguration.of(context)!.topHitBoundary,
+           topHitBoundary ?? _requireAncestor(context).topHitBoundary,
        bottomHitBoundary =
-           bottomHitBoundary ??
-           RefreshConfiguration.of(context)!.bottomHitBoundary,
+           bottomHitBoundary ?? _requireAncestor(context).bottomHitBoundary,
        skipCanRefresh =
-           skipCanRefresh ?? RefreshConfiguration.of(context)!.skipCanRefresh,
+           skipCanRefresh ?? _requireAncestor(context).skipCanRefresh,
        enableScrollWhenRefreshCompleted =
            enableScrollWhenRefreshCompleted ??
-           RefreshConfiguration.of(context)!.enableScrollWhenRefreshCompleted,
+           _requireAncestor(context).enableScrollWhenRefreshCompleted,
        enableScrollWhenTwoLevel =
            enableScrollWhenTwoLevel ??
-           RefreshConfiguration.of(context)!.enableScrollWhenTwoLevel,
+           _requireAncestor(context).enableScrollWhenTwoLevel,
        enableBallisticRefresh =
            enableBallisticRefresh ??
-           RefreshConfiguration.of(context)!.enableBallisticRefresh,
+           _requireAncestor(context).enableBallisticRefresh,
        enableBallisticLoad =
-           enableBallisticLoad ??
-           RefreshConfiguration.of(context)!.enableBallisticLoad,
+           enableBallisticLoad ?? _requireAncestor(context).enableBallisticLoad,
        enableLoadingWhenNoData =
            enableLoadingWhenNoData ??
-           RefreshConfiguration.of(context)!.enableLoadingWhenNoData,
+           _requireAncestor(context).enableLoadingWhenNoData,
        enableLoadingWhenFailed =
            enableLoadingWhenFailed ??
-           RefreshConfiguration.of(context)!.enableLoadingWhenFailed,
+           _requireAncestor(context).enableLoadingWhenFailed,
        closeTwoLevelDistance =
            closeTwoLevelDistance ??
-           RefreshConfiguration.of(context)!.closeTwoLevelDistance,
+           _requireAncestor(context).closeTwoLevelDistance,
        enableRefreshVibrate =
            enableRefreshVibrate ??
-           RefreshConfiguration.of(context)!.enableRefreshVibrate,
+           _requireAncestor(context).enableRefreshVibrate,
        enableLoadMoreVibrate =
            enableLoadMoreVibrate ??
-           RefreshConfiguration.of(context)!.enableLoadMoreVibrate,
+           _requireAncestor(context).enableLoadMoreVibrate,
        shouldFooterFollowWhenNotFull =
            shouldFooterFollowWhenNotFull ??
-           RefreshConfiguration.of(context)!.shouldFooterFollowWhenNotFull,
+           _requireAncestor(context).shouldFooterFollowWhenNotFull,
        super(child: child);
+
+  static RefreshConfiguration _requireAncestor(BuildContext context) {
+    final RefreshConfiguration? ancestor = RefreshConfiguration.of(context);
+    if (ancestor == null) {
+      throw FlutterError(
+        "search RefreshConfiguration anscestor return null,please  Make sure that RefreshConfiguration is the ancestor of that element",
+      );
+    }
+    return ancestor;
+  }
 
   static RefreshConfiguration? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<RefreshConfiguration>();
