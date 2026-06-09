@@ -703,6 +703,9 @@ class RefreshController {
     if (needMove) {
       return Future.delayed(const Duration(milliseconds: 50)).then((_) async {
         if (!_isAttachedTo(currentPosition)) {
+          if (_refresherState != null && _refresherState!.mounted) {
+            _refresherState!.setCanDrag(true);
+          }
           return;
         }
         // - 0.0001 is for NestedScrollView.
@@ -786,6 +789,9 @@ class RefreshController {
     if (needMove) {
       return Future.delayed(const Duration(milliseconds: 50)).then((_) async {
         if (!_isAttachedTo(currentPosition)) {
+          if (_refresherState != null && _refresherState!.mounted) {
+            _refresherState!.setCanDrag(true);
+          }
           return;
         }
         await currentPosition
