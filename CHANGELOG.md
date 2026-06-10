@@ -2,9 +2,8 @@
 
 ## 3.0.0
 
-### Package modernization (Dart 3)
+### Package modernization
 
-* Package scope only (`lib/` + `test/`); example app changes are deferred to Phase 2.
 * Fix Dart 3 mixin compatibility by converting indicator processor types to mixins.
 * Fix full-screen detection boundary in sliver loading layout logic.
 * Replace deprecated ballistic tolerance usage with `toleranceFor(position)`.
